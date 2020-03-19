@@ -60,6 +60,21 @@ var rpg = {
         // Take user click
         $(".card").click("on", function(){
             var clicked = $(this).attr("id");
+            // Opponent Selection - must be first, so it is not checked until the second click
+            if(rpg.playing == true && rpg.fighting == false){
+                for(k = 0; k < rpg.enemies.length; k++){
+                    if(clicked === rpg.enemies[k].name){
+                        rpg.enemies[k].status = "opponent"; 
+                    } else {
+                        console.log(clicked, rpg.enemies[k].name);
+                        $("#" + rpg.enemies[k].name).appendTo("#enemies");
+                    }
+                    rpg.fighting = true;
+                }
+                var attButton = $("<button>").attr("type", "button").addClass("btn btn-dark").text("Attack");
+                $("#attack").append(attButton);
+            }
+            // Character Selection
             if(rpg.playing === false){
                 for(j = 0; j < rpg.characters.length; j++){
                     if(clicked === rpg.characters[j].name){
@@ -71,18 +86,8 @@ var rpg = {
                     }
                 }
                 rpg.playing = true;
-                console.log(rpg.enemies, rpg.playing);
             }
-            if(rpg.playing == true && rpg.fighting == false){
-                for(k = 0; k < rpg.enemies.length; k++){
-                    if(clicked === rpg.enemies[k].name){
-                        rpg.enemies[k].status = "opponent";
-                    } else {
-                        $("#" + rpg.enemies[k].name).appendTo("#enemies");
-                        rpg.fighting = true;
-                    }
-                }
-            }
+            
         });
 
 
