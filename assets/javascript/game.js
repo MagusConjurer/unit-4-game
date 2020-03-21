@@ -4,7 +4,6 @@ function Character(name, attack, health, counterAtt){
     this.attack = attack;
     this.health = health;
     this.counterAtt = counterAtt;
-    this.status = "";
 }
 
 // Create game object, which holds all game rules
@@ -14,6 +13,8 @@ var rpg = {
     charTwo: {},
     charThree: {},
     charFour: {},
+    player: {},
+    opponent: {},
     characters: [],
     enemies: [],
     defeated: [],
@@ -33,7 +34,7 @@ var rpg = {
 
         this.characters.push(this.charOne, this.charTwo, this.charThree, this.charFour);
 
-        // Iterate through characters, set status to "character" and make cards
+        // Iterate through characters, set to "character" and make cards
         for(i = 0; i < this.characters.length; i++){
             // Create <div class="card">
             var card = $("<div>").addClass("card").attr("id",this.characters[i].name);
@@ -44,7 +45,7 @@ var rpg = {
             // // Append <h5 class="card-title"></h5>
             var cardTitle = $("<h5>").addClass("card-title").text(this.characters[i].name);
             // // Append <p class="card-text"></p>
-            var cardText = $("<p>").addClass("card-text").text("Health here");
+            var cardText = $("<p>").addClass("card-text").text("Health: " + this.characters[i].health);
             cardBody.append(cardTitle,cardText);
             card.append(cardImage, cardBody);
             // Append cards to character group div
@@ -61,26 +62,13 @@ var rpg = {
         $(".card").click("on", function(){
             var clicked = $(this).attr("id");
             // Opponent Selection - must be first, so it is not checked until the second click
-            if(rpg.playing == true && rpg.fighting == false){
-                for(k = 0; k < rpg.enemies.length; k++){
-                    if(clicked === rpg.enemies[k].name){
-                        rpg.enemies[k].status = "opponent"; 
-                    } else {
-                        console.log(clicked, rpg.enemies[k].name);
-                        $("#" + rpg.enemies[k].name).appendTo("#enemies");
-                    }
-                    rpg.fighting = true;
-                }
-                var attButton = $("<button>").attr("type", "button").addClass("btn btn-dark").text("Attack");
-                $("#attack").append(attButton);
-            }
+            rpg.selectOpponent();
             // Character Selection
             if(rpg.playing === false){
                 for(j = 0; j < rpg.characters.length; j++){
                     if(clicked === rpg.characters[j].name){
-                        rpg.characters[j].status = "player";
+                        rpg.player = rpg.characters[j];
                     } else {
-                        rpg.characters[j].status = "enemy";
                         rpg.enemies.push(rpg.characters[j]);
                         $("#" + rpg.characters[j].name).appendTo("#opponent");
                     }
@@ -89,22 +77,60 @@ var rpg = {
             }
             
         });
+        rpg.fight();
+    },
 
-
+    selectOpponent : function(){
+        $(".card").click("on", function(){
+            var clicked = $(this).attr("id");
+            if(rpg.playing == true && rpg.fighting == false){
+                for(k = 0; k < rpg.enemies.length; k++){
+                    if(clicked === rpg.enemies[k].name){
+                        rpg.opponent = rpg.enemies[k]; 
+                    } else {
+                        $("#" + rpg.enemies[k].name).appendTo("#enemies");
+                    }
+                    rpg.fighting = true;
+                }
+                var attButton = $("<button>").attr("type", "button").addClass("btn btn-dark").text("Attack");
+                $("#attack").append(attButton);
+            }
+        })
     },
 
     // Function to handle attacks
     fight : function(){
-        // Press attack button
-        // Apply player damage
-        // Apply enemy damage
-        // Increment player damage
-        // If player wins, detach enemy and append to defeated
-        // If opponenet wins, end game
+        $("#attack").on("click", function(){
+            if(rpg.opponent.health > 0 && rpg.player.health > 0){
+                // Apply player damage
+                rpg.opponent.health -= rpg.player.attack;
+                // Apply enemy damage
+                rpg.player.health -= rpg.opponent.counterAtt;
+                // Increment player damage
+                rpg.player.attack += 3;
+                if(rpg.player.health <= 0){
+                    rpg.player.health = 0;
+                }
+                if(rpg.opponent.health <= 0){
+                    rpg.opponent.health = 0;
+                    rpg.opponent = {};
+                }
+            }
+            
+            // If player wins, detach enemy and append to defeated
+            rpg.updateCards();
+            // If opponenet wins, end game
+        });
+    },
+
+    updateCards : function() {
+        for(i = 0; i < rpg.characters.length; i++){
+            var cardText = $("#" + rpg.characters[i].name).find(".card-text");
+            cardText.text("Health: " + rpg.characters[i].health);
+        }
     }
 }
 
 rpg.startGame();
-
 
 // Win conditions
