@@ -30,7 +30,7 @@ $(document).ready(function(){
 
             this.characters = [];
 
-            this.charOne = new Character("charOne", 3, 50, 6);
+            this.charOne = new Character("charOne", 10, 50, 6);
             this.charTwo = new Character("charTwo", 3, 50, 6);
             this.charThree = new Character("charThree", 3, 50, 6);
             this.charFour = new Character("charFour", 3, 50, 6);
@@ -94,7 +94,7 @@ $(document).ready(function(){
         selectOpponent : function(){
             $(".card").click("on", function(){
                 var clicked = $(this).attr("id");
-                if(rpg.playing == true && rpg.fighting == false){
+                if(rpg.playing == true && rpg.fighting == false && rpg.enemies.some(element => element.name === clicked)){
                     for(k = 0; k < rpg.enemies.length; k++){
                         if(clicked === rpg.enemies[k].name){
                             rpg.opponent = rpg.enemies[k]; 
@@ -151,20 +151,24 @@ $(document).ready(function(){
                 $("#attBtn").remove();
                 this.selectOpponent();
             }
-            if(this.player.health == 0){
-                console.log(this.player, "WHy two?");
+            if(this.player.health == 0 && this.wins <= 3){
                 $("#attBtn").remove();
-                this.playing = false;
-                this.fighting = false;
-                this.finished = true;
                 $("#" + this.player.name).appendTo("#defeated");
-                this.player = {};
                 alert("Your hero has fallen!");
+                this.startNew();
+            }
+            if(this.player.health > 0 && this.wins == 3){
+                $("#attBtn").remove();
+                alert("You are victorious!");
                 this.startNew();
             }
         },
         
         startNew : function(){
+            this.playing = false;
+            this.fighting = false;
+            this.finished = true;
+            this.player = {};
             var newGame = $("<button>").attr({type:"button", id:"startBtn"}).addClass("btn btn-dark").text("Live to die another day?");
             $("#attack").append(newGame);
             $(document).on("click", "#startBtn", function(){
