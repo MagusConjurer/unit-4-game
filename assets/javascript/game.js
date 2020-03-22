@@ -11,10 +11,10 @@ $(document).ready(function(){
     // Create game object, which holds all game rules
     var rpg = {
         wins: 0,
-        charOne: {},
-        charTwo: {},
-        charThree: {},
-        charFour: {},
+        charOne: new Character("charOne", 3, 50, 6),
+        charTwo: new Character("charTwo", 3, 50, 6),
+        charThree: new Character("charThree", 3, 50, 6),
+        charFour: new Character("charFour", 3, 50, 6),
         player: {},
         opponent: {},
         characters: [],
@@ -60,11 +60,15 @@ $(document).ready(function(){
 
         // Function to select the player and assign the three enemies  
         startGame : function(){
-            rpg.makeCards();
+            
             this.wins = 0;
-            this.playing = false,
-            this.fighting = false,
-            this.finished = false
+            this.playing = false;
+            this.fighting = false;
+            this.finished = false;
+            this.enemies = [];
+            this.defeated = [];
+            rpg.makeCards();
+
             // Take user click
             $(".card").click("on", function(){
                 var clicked = $(this).attr("id");
@@ -141,7 +145,6 @@ $(document).ready(function(){
                 this.opponent = {};
                 for(l = 0; l < this.enemies.length; l++){
                     $("#" + this.enemies[l].name).appendTo("#opponent");
-                    console.log("here");
                 }
                 this.wins++;
                 this.fighting = false;
@@ -149,11 +152,13 @@ $(document).ready(function(){
                 this.selectOpponent();
             }
             if(this.player.health == 0){
+                console.log(this.player, "WHy two?");
                 $("#attBtn").remove();
                 this.playing = false;
                 this.fighting = false;
                 this.finished = true;
                 $("#" + this.player.name).appendTo("#defeated");
+                this.player = {};
                 alert("Your hero has fallen!");
                 this.startNew();
             }
@@ -162,6 +167,13 @@ $(document).ready(function(){
         startNew : function(){
             var newGame = $("<button>").attr({type:"button", id:"startBtn"}).addClass("btn btn-dark").text("Live to die another day?");
             $("#attack").append(newGame);
+            $(document).on("click", "#startBtn", function(){
+                for(m = 0; m < rpg.characters.length; m++){
+                    $("#" + rpg.characters[m].name).remove();
+                }
+                $("#startBtn").remove();
+                rpg.startGame();
+            });
         }
     }
 
