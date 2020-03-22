@@ -20,6 +20,7 @@ var rpg = {
     defeated: [],
     playing: false,
     fighting: false,
+    finished: false,
     
     // Function to create four cards for character selection
     makeCards : function(){      
@@ -58,13 +59,17 @@ var rpg = {
     // Function to select the player and assign the three enemies  
     startGame : function(){
         rpg.makeCards();
+        this.wins = 0;
+        this.playing = false,
+        this.fighting = false,
+        this.finished = false
         // Take user click
         $(".card").click("on", function(){
             var clicked = $(this).attr("id");
             // Opponent Selection - must be first, so it is not checked until the second click
             rpg.selectOpponent();
             // Character Selection
-            if(rpg.playing === false){
+            if(rpg.playing === false && rpg.finished === false){
                 for(j = 0; j < rpg.characters.length; j++){
                     if(clicked === rpg.characters[j].name){
                         rpg.player = rpg.characters[j];
@@ -113,20 +118,41 @@ var rpg = {
                 }
                 if(rpg.opponent.health <= 0){
                     rpg.opponent.health = 0;
-                    rpg.opponent = {};
+                    // rpg.opponent = {};
                 }
             }
             
-            // If player wins, detach enemy and append to defeated
-            rpg.updateCards();
+            // If player wins, remove opponent and appendTo defeated
             // If opponenet wins, end game
+            rpg.updateCards();
         });
     },
 
     updateCards : function() {
-        for(i = 0; i < rpg.characters.length; i++){
-            var cardText = $("#" + rpg.characters[i].name).find(".card-text");
-            cardText.text("Health: " + rpg.characters[i].health);
+        for(i = 0; i < this.characters.length; i++){
+            var cardText = $("#" + this.characters[i].name).find(".card-text");
+            cardText.text("Health: " + this.characters[i].health);
+        }
+        if(this.opponent.health <= 0){
+            $("#" + this.opponent.name).appendTo("#defeated");
+            this.enemies.splice($.inArray(this.opponent, this.enemies), 1);
+            this.opponent = {};
+            for(l = 0; l < this.enemies.length; l++){
+                $("#" + this.enemies[l].name).appendTo("#opponent");
+                console.log("here");
+            }
+            this.wins++;
+            this.fighting = false;
+            $(".btn").remove();
+            this.selectOpponent();
+        }
+        if(this.player.health == 0){
+            $(".btn").remove();
+            this.playing = false;
+            this.fighting = false;
+            this.finished = true;
+            $("#" + this.player.name).appendTo("#defeated");
+            alert("Your hero has fallen!");
         }
     }
 }
