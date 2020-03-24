@@ -1,0 +1,38 @@
+body {
+    color: #ffffff;
+    background-image: url(../images/dark_brick_wall/dark_brick_wall.png);
+    font-family: "Nanum Gothic";
+}
+
+.navbar-brand{
+    font-family: "Shadows Into Light";
+    letter-spacing: 3px;
+}
+
+.card {
+    max-width: 150px;
+    margin: 5px 15px 5px 15px;
+    color: darkolivegreen;
+    background-color: #D3D3D3;
+    font-family: "Shadows Into Light";
+    font-size: 18px;
+    letter-spacing: 2px;
+}
+
+#attack {
+    margin-left: 45px;
+}
+
+#defeated {
+    margin-bottom: 50px;
+}
+
+h1 {
+    text-align: center;
+}
+
+h3 {
+    display: block;
+    width: 100%;
+    margin-left: 20px;
+}

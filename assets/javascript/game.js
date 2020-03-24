@@ -91,6 +91,21 @@ $(document).ready(function(){
                     for(j = 0; j < rpg.characters.length; j++){
                         if(clicked === rpg.characters[j].name){
                             rpg.player = rpg.characters[j];
+                            var charAudio;
+                            if(clicked == "illidan"){
+                                charAudio = new Audio("assets/sounds/illidanwhat.mp3");
+                            }
+                            if(clicked == "thrall"){
+                                charAudio = new Audio("assets/sounds/thrallwarcry.mp3");
+                            }
+                            if(clicked == "jaina"){
+                                charAudio = new Audio("assets/sounds/jainawhat.mp3");
+                            }
+                            if(clicked == "sylvanas"){
+                                charAudio = new Audio("assets/sounds/sylvanaswhat.mp3");
+                            }
+                            charAudio.loop = false;
+                            charAudio.play();
                         } else {
                             rpg.enemies.push(rpg.characters[j]);
                             $("#" + rpg.characters[j].name).appendTo("#opponent");
@@ -136,12 +151,9 @@ $(document).ready(function(){
                     }
                     if(rpg.opponent.health <= 0){
                         rpg.opponent.health = 0;
-                        // rpg.opponent = {};
                     }
+                    
                 }
-                
-                // If player wins, remove opponent and appendTo defeated
-                // If opponenet wins, end game
                 rpg.updateCards();
             });
         },
@@ -163,14 +175,21 @@ $(document).ready(function(){
                 $("#attBtn").remove();
                 this.selectOpponent();
             }
+            var endAudio;
             if(this.player.health == 0 && this.wins <= 3){
                 $("#attBtn").remove();
                 $("#" + this.player.name).appendTo("#defeated");
+                endAudio = new Audio("assets/sounds/questfailed.mp3");
+                endAudio.loop = false;
+                endAudio.play();
                 alert("Your hero has fallen!");
                 this.startNew();
             }
             if(this.player.health > 0 && this.wins == 3){
                 $("#attBtn").remove();
+                endAudio = new Audio("assets/sounds/questcompleted.mp3");
+                endAudio.loop = false;
+                endAudio.play();
                 alert("You are victorious!");
                 this.startNew();
             }
