@@ -11,10 +11,10 @@ $(document).ready(function(){
     // Create game object, which holds all game rules
     var rpg = {
         wins: 0,
-        charOne: new Character("charOne", 3, 50, 6),
-        charTwo: new Character("charTwo", 3, 50, 6),
-        charThree: new Character("charThree", 3, 50, 6),
-        charFour: new Character("charFour", 3, 50, 6),
+        charOne: {},
+        charTwo: {},
+        charThree: {},
+        charFour: {},
         player: {},
         opponent: {},
         characters: [],
@@ -30,10 +30,10 @@ $(document).ready(function(){
 
             this.characters = [];
 
-            this.charOne = new Character("charOne", 10, 50, 6);
-            this.charTwo = new Character("charTwo", 3, 50, 6);
-            this.charThree = new Character("charThree", 3, 50, 6);
-            this.charFour = new Character("charFour", 3, 50, 6);
+            this.charOne = new Character("illidan", 20, 150, 5);
+            this.charTwo = new Character("thrall", 10, 150, 15);
+            this.charThree = new Character("jaina", 5, 150, 20);
+            this.charFour = new Character("sylvanas", 15, 150, 10);
 
             this.characters.push(this.charOne, this.charTwo, this.charThree, this.charFour);
 
@@ -42,11 +42,23 @@ $(document).ready(function(){
                 // Create <div class="card">
                 var card = $("<div>").addClass("card").attr("id",this.characters[i].name);
                 // Append <div class="card-img-top" src="..." alt="Card image cap">
-                var cardImage = $("<div>").addClass("card-img-top").attr("src","...").attr("alt","Card image cap");
+                var cardImage;
+                if(this.characters[i].name == "illidan"){
+                    cardImage = $("<img>").addClass("card-img-top").attr("src","assets/images/w3illidan.jpg").attr("alt","Card image cap");
+                }
+                if(this.characters[i].name == "thrall"){
+                    cardImage = $("<img>").addClass("card-img-top").attr("src","assets/images/w3thrall.jpg").attr("alt","Card image cap");
+                }
+                if(this.characters[i].name == "jaina"){
+                    cardImage = $("<img>").addClass("card-img-top").attr("src","assets/images/w3jaina.jpg").attr("alt","Card image cap");
+                }
+                if(this.characters[i].name == "sylvanas"){
+                    cardImage = $("<img>").addClass("card-img-top").attr("src","assets/images/w3sylvanas.jpg").attr("alt","Card image cap");
+                }
                 // Append <div class="card-body">
                 var cardBody = $("<div>").addClass("card-body");
                 // // Append <h5 class="card-title"></h5>
-                var cardTitle = $("<h5>").addClass("card-title").text(this.characters[i].name);
+                var cardTitle = $("<h5>").addClass("card-title").text(this.characters[i].name.toUpperCase());
                 // // Append <p class="card-text"></p>
                 var cardText = $("<p>").addClass("card-text").text("Health: " + this.characters[i].health);
                 cardBody.append(cardTitle,cardText);
@@ -118,7 +130,7 @@ $(document).ready(function(){
                     // Apply enemy damage
                     rpg.player.health -= rpg.opponent.counterAtt;
                     // Increment player damage
-                    rpg.player.attack += 3;
+                    rpg.player.attack = Math.round(rpg.player.attack * 1.5);
                     if(rpg.player.health <= 0){
                         rpg.player.health = 0;
                     }
@@ -165,6 +177,10 @@ $(document).ready(function(){
         },
         
         startNew : function(){
+            this.charOne = new Character("illidan", 20, 100, 40),
+            this.charTwo = new Character("thrall", 10, 150, 20),
+            this.charThree = new Character("jaina", 5, 200, 15),
+            this.charFour = new Character("sylvanas", 15, 125, 30)
             this.playing = false;
             this.fighting = false;
             this.finished = true;
